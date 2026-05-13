@@ -1,2 +1,0 @@
-USE BeyazEsyaDB;
-GO
