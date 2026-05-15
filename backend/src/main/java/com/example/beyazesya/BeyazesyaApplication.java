@@ -1,4 +1,4 @@
-﻿package com.example.beyazesya;
+package com.example.beyazesya;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

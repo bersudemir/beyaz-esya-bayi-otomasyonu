@@ -9,7 +9,7 @@ GO
 
 IF DB_ID('BeyazEsyaDB') IS NOT NULL
 BEGIN
-    ALTER DATABASE BeyazEsyaDB 
+    ALTER DATABASE BeyazEsyaDB
     SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
 
     DROP DATABASE BeyazEsyaDB;
@@ -35,6 +35,8 @@ CREATE TABLE Customer (
     email NVARCHAR(100) NOT NULL UNIQUE,
     created_at DATETIME2 NOT NULL DEFAULT SYSDATETIME()
 );
+GO
+
 
 CREATE TABLE Employee (
     employee_id INT IDENTITY(1,1) PRIMARY KEY,
@@ -45,11 +47,15 @@ CREATE TABLE Employee (
     salary DECIMAL(10,2) NOT NULL CHECK (salary >= 0),
     created_at DATETIME2 NOT NULL DEFAULT SYSDATETIME()
 );
+GO
+
 
 CREATE TABLE Category (
     category_id INT IDENTITY(1,1) PRIMARY KEY,
     category_name NVARCHAR(100) NOT NULL UNIQUE
 );
+GO
+
 
 CREATE TABLE Product (
     product_id INT IDENTITY(1,1) PRIMARY KEY,
@@ -60,8 +66,11 @@ CREATE TABLE Product (
     stock_quantity INT NOT NULL DEFAULT 0 CHECK (stock_quantity >= 0),
 
     CONSTRAINT FK_Product_Category
-        FOREIGN KEY (category_id) REFERENCES Category(category_id)
+        FOREIGN KEY (category_id)
+        REFERENCES Category(category_id)
 );
+GO
+
 
 CREATE TABLE Sale (
     sale_id INT IDENTITY(1,1) PRIMARY KEY,
@@ -73,11 +82,15 @@ CREATE TABLE Sale (
         CHECK (sale_status IN ('Pending', 'Completed', 'Cancelled')),
 
     CONSTRAINT FK_Sale_Customer
-        FOREIGN KEY (customer_id) REFERENCES Customer(customer_id),
+        FOREIGN KEY (customer_id)
+        REFERENCES Customer(customer_id),
 
     CONSTRAINT FK_Sale_Employee
-        FOREIGN KEY (employee_id) REFERENCES Employee(employee_id)
+        FOREIGN KEY (employee_id)
+        REFERENCES Employee(employee_id)
 );
+GO
+
 
 CREATE TABLE SaleDetail (
     sale_detail_id INT IDENTITY(1,1) PRIMARY KEY,
@@ -87,10 +100,12 @@ CREATE TABLE SaleDetail (
     unit_price DECIMAL(10,2) NOT NULL CHECK (unit_price > 0),
 
     CONSTRAINT FK_SaleDetail_Sale
-        FOREIGN KEY (sale_id) REFERENCES Sale(sale_id),
+        FOREIGN KEY (sale_id)
+        REFERENCES Sale(sale_id),
 
     CONSTRAINT FK_SaleDetail_Product
-        FOREIGN KEY (product_id) REFERENCES Product(product_id),
+        FOREIGN KEY (product_id)
+        REFERENCES Product(product_id),
 
     -- Aynı ürün aynı satış içerisinde iki ayrı satır olarak tutulmaz.
     CONSTRAINT UQ_SaleDetail_Sale_Product
@@ -105,18 +120,23 @@ GO
 
 CREATE INDEX IX_Product_CategoryID
 ON Product(category_id);
+GO
 
 CREATE INDEX IX_Sale_CustomerID
 ON Sale(customer_id);
+GO
 
 CREATE INDEX IX_Sale_EmployeeID
 ON Sale(employee_id);
+GO
 
 CREATE INDEX IX_Sale_Status_Date
 ON Sale(sale_status, sale_date);
+GO
 
 CREATE INDEX IX_SaleDetail_SaleID
 ON SaleDetail(sale_id);
+GO
 
 CREATE INDEX IX_SaleDetail_ProductID
 ON SaleDetail(product_id);
@@ -176,16 +196,9 @@ GO
 -- TRIGGERLAR
 -- =========================================================
 
--- ---------------------------------------------------------
 -- 1) SaleDetail değişikliklerinde stok kontrolü ve stok güncelleme
---
--- INSERT  -> stok düşer
--- DELETE  -> stok geri artar
--- UPDATE  -> eski miktar geri eklenir, yeni miktar düşülür
---
 -- Ayrıca Completed veya Cancelled satışların detaylarının
 -- değiştirilmesi engellenir.
--- ---------------------------------------------------------
 
 CREATE TRIGGER trg_SaleDetail_Stock
 ON SaleDetail
@@ -285,9 +298,7 @@ END;
 GO
 
 
--- ---------------------------------------------------------
 -- 2) SaleDetail değiştikçe Sale.total_amount otomatik güncellenir.
--- ---------------------------------------------------------
 
 CREATE TRIGGER trg_SaleDetail_TotalAmount
 ON SaleDetail
@@ -313,19 +324,8 @@ END;
 GO
 
 
--- ---------------------------------------------------------
 -- 3) Satış durum geçişlerini kontrol eder.
---
--- İzin verilen geçişler:
--- Pending -> Completed
--- Pending -> Cancelled
---
--- Ek güvenlik:
--- Ürün detayı olmayan satış Completed yapılamaz.
--- Bu kontrol hem procedure hem trigger seviyesinde sağlanır.
---
 -- Cancelled işleminde ürün stokları geri iade edilir.
--- ---------------------------------------------------------
 
 CREATE TRIGGER trg_Sale_StatusControlAndStockReturn
 ON Sale
@@ -364,9 +364,6 @@ BEGIN
 
         ---------------------------------------------------------
         -- B) Ürün detayı olmayan Pending satış Completed yapılamaz
-        --
-        -- Bu kontrol, satış durumu doğrudan UPDATE ile değiştirilse
-        -- bile boş satışın tamamlanmasını engeller.
         ---------------------------------------------------------
         IF EXISTS (
             SELECT 1
@@ -417,9 +414,7 @@ GO
 -- STORED PROCEDURELER
 -- =========================================================
 
--- ---------------------------------------------------------
 -- 1) Belirli müşterinin satış detaylarını getirir.
--- ---------------------------------------------------------
 
 CREATE PROCEDURE sp_GetCustomerSales
     @customer_id INT
@@ -427,7 +422,21 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    SELECT *
+    SELECT
+        sale_id,
+        sale_date,
+        sale_status,
+        total_amount,
+        customer_id,
+        customer_name,
+        employee_id,
+        employee_name,
+        product_id,
+        product_name,
+        brand,
+        quantity,
+        unit_price,
+        line_total
     FROM vw_SaleReport
     WHERE customer_id = @customer_id
     ORDER BY sale_date DESC;
@@ -435,13 +444,9 @@ END;
 GO
 
 
--- ---------------------------------------------------------
--- 2) Ürün stok miktarını manuel olarak belirli bir değere eşitler.
--- Örneğin stok sayımı sonrası kullanılabilir.
---
+-- 2) Ürün stok miktarını manuel olarak günceller.
 -- Ancak bu ürüne ait Pending durumda satış varsa,
 -- stok rezervasyonu bozulmaması için manuel güncelleme yapılmaz.
--- ---------------------------------------------------------
 
 CREATE PROCEDURE sp_UpdateProductStock
     @product_id INT,
@@ -474,10 +479,6 @@ BEGIN
 
     ---------------------------------------------------------
     -- C) Bu ürüne ait Pending satış var mı?
-    --
-    -- Pending satışta stok rezervasyon mantığıyla düşürülmüştür.
-    -- Bu aşamada manuel stok eşitleme yapılırsa,
-    -- satış iptal edildiğinde stok yanlış şekilde artabilir.
     ---------------------------------------------------------
     IF EXISTS (
         SELECT 1
@@ -506,13 +507,9 @@ END;
 GO
 
 
--- ---------------------------------------------------------
 -- 3) Yeni satış oluşturur.
--- Yeni satış her zaman Pending durumunda başlar.
---
 -- Oluşan sale_id SELECT sonucu olarak döndürülür.
 -- Bu yapı backend tarafında karşılamayı kolaylaştırır.
--- ---------------------------------------------------------
 
 CREATE PROCEDURE sp_CreateSale
     @customer_id INT,
@@ -561,12 +558,9 @@ END;
 GO
 
 
--- ---------------------------------------------------------
 -- 4) Pending satışa yeni ürün ekler.
---
 -- Birim fiyat frontend'den alınmaz.
 -- Product tablosundaki güncel fiyat otomatik alınır.
--- ---------------------------------------------------------
 
 CREATE PROCEDURE sp_AddSaleDetail
     @sale_id INT,
@@ -658,20 +652,9 @@ END;
 GO
 
 
--- ---------------------------------------------------------
 -- 5) Pending satıştaki mevcut ürünün miktarını günceller.
---
--- Aynı ürün aynı satışa ikinci kez satır olarak eklenmez.
--- Bunun yerine mevcut SaleDetail kaydının quantity değeri
--- bu prosedür ile güncellenir.
---
--- Örnek:
--- quantity 1 iken @new_quantity = 3 verilirse,
--- toplam adet 3 olur.
---
 -- Stok yeterlilik kontrolü, stok güncelleme ve satış toplamı
 -- ilgili triggerlar tarafından otomatik yönetilir.
--- ---------------------------------------------------------
 
 CREATE PROCEDURE sp_UpdateSaleDetailQuantity
     @sale_id INT,
@@ -733,7 +716,6 @@ BEGIN
 
     ---------------------------------------------------------
     -- E) Miktarı güncelle
-    --
     -- Bu UPDATE işlemi sonrası:
     -- - Stok fark kadar trigger ile güncellenir.
     -- - Stok yetersizse trigger işlemi geri alır.
@@ -747,16 +729,9 @@ END;
 GO
 
 
--- ---------------------------------------------------------
 -- 6) Satış durumunu günceller.
---
--- Yalnızca:
--- Pending -> Completed
--- Pending -> Cancelled
---
 -- Ürün detayı olmayan satış Completed yapılamaz.
 -- Bu kontrol trigger tarafında da ayrıca yapılmaktadır.
--- ---------------------------------------------------------
 
 CREATE PROCEDURE sp_UpdateSaleStatus
     @sale_id INT,
@@ -828,7 +803,8 @@ GO
 -- DUMMY DATA
 -- =========================================================
 
-INSERT INTO Category (category_name) VALUES
+INSERT INTO Category (category_name)
+VALUES
 ('Buzdolabı'),
 ('Çamaşır Makinesi'),
 ('Bulaşık Makinesi'),
@@ -839,8 +815,11 @@ INSERT INTO Category (category_name) VALUES
 ('Kurutma Makinesi'),
 ('Ocak'),
 ('Mikrodalga');
+GO
 
-INSERT INTO Product (category_id, product_name, brand, price, stock_quantity) VALUES
+
+INSERT INTO Product (category_id, product_name, brand, price, stock_quantity)
+VALUES
 (1, 'No Frost Buzdolabı', 'Arçelik', 32000, 20),
 (2, '9 KG Çamaşır Makinesi', 'Beko', 21000, 25),
 (3, '5 Programlı Bulaşık Makinesi', 'Vestel', 18500, 18),
@@ -851,8 +830,11 @@ INSERT INTO Product (category_id, product_name, brand, price, stock_quantity) VA
 (8, '8 KG Kurutma Makinesi', 'Siemens', 26000, 13),
 (9, 'Cam Ankastre Ocak', 'Profilo', 9500, 30),
 (10, 'Dijital Mikrodalga Fırın', 'Arçelik', 7000, 22);
+GO
 
-INSERT INTO Customer (first_name, last_name, phone, email) VALUES
+
+INSERT INTO Customer (first_name, last_name, phone, email)
+VALUES
 ('Ahmet', 'Yılmaz', '05551112233', 'ahmet@email.com'),
 ('Ayşe', 'Demir', '05552223344', 'ayse@email.com'),
 ('Mehmet', 'Kaya', '05553334455', 'mehmet@email.com'),
@@ -863,8 +845,11 @@ INSERT INTO Customer (first_name, last_name, phone, email) VALUES
 ('Elif', 'Aydın', '05558889900', 'elif@email.com'),
 ('Hasan', 'Özdemir', '05559990011', 'hasan@email.com'),
 ('Hülya', 'Arslan', '05550001122', 'hulya@email.com');
+GO
 
-INSERT INTO Employee (first_name, last_name, phone, position, salary) VALUES
+
+INSERT INTO Employee (first_name, last_name, phone, position, salary)
+VALUES
 ('Burak', 'Can', '05051112233', 'Mağaza Müdürü', 45000),
 ('Cansu', 'Tekin', '05052223344', 'Satış Danışmanı', 25000),
 ('Emre', 'Kurt', '05053334455', 'Satış Danışmanı', 25000),
@@ -875,9 +860,12 @@ INSERT INTO Employee (first_name, last_name, phone, position, salary) VALUES
 ('Merve', 'Sarı', '05058889900', 'Müşteri Temsilcisi', 23000),
 ('Kerem', 'Işık', '05059990011', 'Satış Danışmanı', 25000),
 ('Deniz', 'Gök', '05050001122', 'Teknik Servis', 28000);
+GO
+
 
 -- Satışlar önce Pending olarak oluşturulur.
-INSERT INTO Sale (customer_id, employee_id, sale_status) VALUES
+INSERT INTO Sale (customer_id, employee_id, sale_status)
+VALUES
 (1, 2, 'Pending'),
 (2, 3, 'Pending'),
 (3, 5, 'Pending'),
@@ -888,11 +876,14 @@ INSERT INTO Sale (customer_id, employee_id, sale_status) VALUES
 (8, 2, 'Pending'),
 (9, 9, 'Pending'),
 (10, 3, 'Pending');
+GO
+
 
 -- Satış detayları eklenir.
 -- Bu aşamada stoklar trigger ile otomatik düşer.
 -- Sale.total_amount trigger ile otomatik hesaplanır.
-INSERT INTO SaleDetail (sale_id, product_id, quantity, unit_price) VALUES
+INSERT INTO SaleDetail (sale_id, product_id, quantity, unit_price)
+VALUES
 (1, 1, 1, 32000),
 (1, 9, 1, 9500),
 (2, 2, 1, 21000),
@@ -906,6 +897,7 @@ INSERT INTO SaleDetail (sale_id, product_id, quantity, unit_price) VALUES
 (10, 1, 1, 32000),
 (10, 3, 1, 18500);
 GO
+
 
 -- Satış durumları iş akışına uygun olarak güncellenir.
 EXEC sp_UpdateSaleStatus @sale_id = 1, @new_status = 'Completed';
@@ -943,7 +935,7 @@ GO
 
 DECLARE @newSaleId INT;
 
--- sp_CreateSale artık yeni satış ID'sini SELECT sonucu olarak döndürüyor.
+-- sp_CreateSale yeni satış ID'sini SELECT sonucu olarak döndürür.
 -- Bu sonucu tablo değişkenine alıyoruz.
 DECLARE @CreatedSale TABLE (
     new_sale_id INT
@@ -990,90 +982,82 @@ GO
 -- EK TESTLER
 -- =========================================================
 
--- ---------------------------------------------------------
 -- NULL satış durumu gönderme denemesi -> HATA vermeli
--- ---------------------------------------------------------
--- EXEC sp_UpdateSaleStatus
---     @sale_id = 3,
---     @new_status = NULL;
+/*
+EXEC sp_UpdateSaleStatus
+    @sale_id = 3,
+    @new_status = NULL;
+*/
 
 
--- ---------------------------------------------------------
 -- 5 numaralı satış Cancelled mı?
--- ---------------------------------------------------------
 SELECT * FROM Sale WHERE sale_id = 5;
 
 
--- ---------------------------------------------------------
 -- 5 numaralı satışın detayları duruyor mu?
--- ---------------------------------------------------------
 SELECT * FROM SaleDetail WHERE sale_id = 5;
 
 
--- ---------------------------------------------------------
 -- 4 numaralı ürünün stoğu iptal sonrası geri geldi mi?
 -- Başlangıç stoğu 15'tir.
 -- 5 numaralı satış iptal edildiği için tekrar 15 olmalıdır.
--- ---------------------------------------------------------
 SELECT * FROM Product WHERE product_id = 4;
 
 
--- ---------------------------------------------------------
 -- İptal edilmiş satışa ürün ekleme denemesi -> HATA vermeli
--- ---------------------------------------------------------
--- EXEC sp_AddSaleDetail
---     @sale_id = 5,
---     @product_id = 2,
---     @quantity = 1;
+/*
+EXEC sp_AddSaleDetail
+    @sale_id = 5,
+    @product_id = 2,
+    @quantity = 1;
+*/
 
 
--- ---------------------------------------------------------
 -- Tamamlanmış satışa ürün ekleme denemesi -> HATA vermeli
--- ---------------------------------------------------------
--- EXEC sp_AddSaleDetail
---     @sale_id = 1,
---     @product_id = 3,
---     @quantity = 1;
+/*
+EXEC sp_AddSaleDetail
+    @sale_id = 1,
+    @product_id = 3,
+    @quantity = 1;
+*/
 
 
--- ---------------------------------------------------------
 -- Tamamlanmış satıştaki ürün miktarını güncelleme denemesi -> HATA vermeli
--- ---------------------------------------------------------
--- EXEC sp_UpdateSaleDetailQuantity
---     @sale_id = 1,
---     @product_id = 1,
---     @new_quantity = 2;
+/*
+EXEC sp_UpdateSaleDetailQuantity
+    @sale_id = 1,
+    @product_id = 1,
+    @new_quantity = 2;
+*/
 
 
--- ---------------------------------------------------------
 -- Pending satıştaki ürün miktarını 0 yapma denemesi -> HATA vermeli
--- ---------------------------------------------------------
--- EXEC sp_UpdateSaleDetailQuantity
---     @sale_id = 3,
---     @product_id = 3,
---     @new_quantity = 0;
+/*
+EXEC sp_UpdateSaleDetailQuantity
+    @sale_id = 3,
+    @product_id = 3,
+    @new_quantity = 0;
+*/
 
 
--- ---------------------------------------------------------
 -- Completed satış tekrar Cancelled yapılamaz -> HATA vermeli
--- ---------------------------------------------------------
--- EXEC sp_UpdateSaleStatus
---     @sale_id = 1,
---     @new_status = 'Cancelled';
+/*
+EXEC sp_UpdateSaleStatus
+    @sale_id = 1,
+    @new_status = 'Cancelled';
+*/
 
 
--- ---------------------------------------------------------
 -- Cancelled satış tekrar Completed yapılamaz -> HATA vermeli
--- ---------------------------------------------------------
--- EXEC sp_UpdateSaleStatus
---     @sale_id = 5,
---     @new_status = 'Completed';
+/*
+EXEC sp_UpdateSaleStatus
+    @sale_id = 5,
+    @new_status = 'Completed';
+*/
 
 
--- ---------------------------------------------------------
--- Ürün eklenmemiş boş satış Completed yapılamaz -> HATA vermeli
+-- Ürün eklenmemiş boş satış Completed yapılamaz.
 -- Bu hata procedure seviyesinde engellenir.
--- ---------------------------------------------------------
 /*
 DECLARE @emptySaleId INT;
 
@@ -1095,11 +1079,9 @@ EXEC sp_UpdateSaleStatus
 */
 
 
--- ---------------------------------------------------------
 -- Ürün eklenmemiş boş satış doğrudan UPDATE ile Completed
 -- yapılmaya çalışılırsa da HATA vermeli.
 -- Bu hata trigger seviyesinde engellenir.
--- ---------------------------------------------------------
 /*
 DECLARE @emptySaleId2 INT;
 
@@ -1121,9 +1103,7 @@ WHERE sale_id = @emptySaleId2;
 */
 
 
--- ---------------------------------------------------------
--- Pending satışta kullanılan ürünün stoğu manuel değiştirilemez
--- ---------------------------------------------------------
+-- Pending satışta kullanılan ürünün stoğu manuel değiştirilemez.
 /*
 DECLARE @pendingSaleId INT;
 
@@ -1144,7 +1124,7 @@ EXEC sp_AddSaleDetail
     @product_id = 5,
     @quantity = 1;
 
--- Product 5 pending satışta olduğu için HATA vermeli
+-- Product 5 Pending satışta olduğu için HATA vermeli
 EXEC sp_UpdateProductStock
     @product_id = 5,
     @new_stock = 50;
