@@ -123,8 +123,8 @@ cd beyaz-esya-bayi-otomasyonu
 - `backend/src/main/resources/application.properties` dosyasındaki kullanıcı adı ve şifre bilgileri yerel SQL Server bilgilerine göre düzenlenir.
 
 ```properties
-spring.datasource.username=YOUR_DB_USERNAME
-spring.datasource.password=YOUR_DB_PASSWORD
+spring.datasource.username=beyazesya_user
+spring.datasource.password=beyaz123
 ```
 
 4. Backend çalıştırılır:
