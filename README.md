@@ -66,7 +66,7 @@
 
 ## Veritabanı ER Diyagramı
 
-![Uploading grup45_er-diyagramı.png…]()
+<img width="2092" height="2231" alt="grup45_er-diyagramı" src="https://github.com/user-attachments/assets/cfc5fcb7-e5af-41fd-bc7b-02d00b91231c" />
 
 ## Yazılım Mimarisi
 
