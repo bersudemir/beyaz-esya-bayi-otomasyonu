@@ -94,23 +94,7 @@ Page / View -> ViewModel Hook -> Service / API -> Backend
 
 ## Akış Şeması
 
-```mermaid
-flowchart TD
-    A[Müşteri ve çalışan seçilir] --> B[Yeni satış oluşturulur]
-    B --> C[Satış durumu Pending olarak başlar]
-    C --> D[Ürün seçilir]
-    D --> E[Ürün satışa eklenir]
-    E --> F{Stok yeterli mi?}
-    F -- Hayır --> G[Hata mesajı gösterilir]
-    F -- Evet --> H[Stok miktarı azaltılır]
-    H --> I[Satış toplam tutarı güncellenir]
-    I --> J{Satış sonucu}
-    J -- Completed --> K[Satış tamamlanır]
-    J -- Cancelled --> L[Satış iptal edilir]
-    L --> M[Stok geri eklenir]
-    K --> N[Satış rapora yansır]
-    M --> N
-```
+<img width="8196" height="4445" alt="grup45_akış-diyagramı" src="https://github.com/user-attachments/assets/90719040-a3c1-4dfe-bc8c-00fa5739f152" />
 
 ## Arayüz Görselleri
 
