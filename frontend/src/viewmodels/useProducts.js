@@ -102,7 +102,7 @@ export function useProducts() {
     try {
       await updateProductStock(stockForm.productId, Number(stockForm.newStock))
       setStockForm(emptyStockForm)
-      setSuccess('Stok basariyla guncellendi.')
+      setSuccess('Stok başarıyla güncellendi.')
       await loadInitialData()
     } catch (err) {
       setError(err.message)

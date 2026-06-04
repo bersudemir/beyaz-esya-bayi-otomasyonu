@@ -96,10 +96,10 @@ export function useEmployees() {
 
       if (editingEmployeeId) {
         await updateEmployee(editingEmployeeId, payload)
-        setSuccess('Calisan basariyla guncellendi.')
+        setSuccess('Çalışan başarıyla güncellendi.')
       } else {
         await createEmployee(payload)
-        setSuccess('Calisan basariyla eklendi.')
+        setSuccess('Çalışan başarıyla eklendi.')
       }
 
       resetForm()

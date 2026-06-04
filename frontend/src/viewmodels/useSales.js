@@ -116,7 +116,7 @@ export function useSales() {
 
       setCurrentSale(sale)
       setSaleItems([])
-      setSuccess(`Satis olusturuldu. Satis ID: ${sale.saleId}`)
+      setSuccess(`Satış oluşturuldu. Satış ID: ${sale.saleId}`)
     } catch (err) {
       setError(err.message)
       setValidationErrors(err.validationErrors)
@@ -129,7 +129,7 @@ export function useSales() {
     event.preventDefault()
 
     if (!currentSale) {
-      setError('Once satis olusturmalisiniz.')
+      setError('Önce satış oluşturmalısınız.')
       return
     }
 
@@ -151,13 +151,13 @@ export function useSales() {
         ...currentItems.filter((item) => item.productId !== payload.productId),
         {
           productId: payload.productId,
-          productName: product?.productName || `Urun #${payload.productId}`,
+          productName: product?.productName || `Ürün #${payload.productId}`,
           brand: product?.brand || '',
           quantity: payload.quantity,
         },
       ])
       setDetailForm(emptyDetailForm)
-      setSuccess('Urun satisa eklendi.')
+      setSuccess('Ürün satışa eklendi.')
     } catch (err) {
       setError(err.message)
       setValidationErrors(err.validationErrors)
@@ -170,7 +170,7 @@ export function useSales() {
     event.preventDefault()
 
     if (!currentSale) {
-      setError('Once satis olusturmalisiniz.')
+      setError('Önce satış oluşturmalısınız.')
       return
     }
 
@@ -193,7 +193,7 @@ export function useSales() {
         ),
       )
       setQuantityForm(emptyQuantityForm)
-      setSuccess('Urun miktari guncellendi.')
+      setSuccess('Ürün miktarı güncellendi.')
     } catch (err) {
       setError(err.message)
       setValidationErrors(err.validationErrors)
@@ -204,7 +204,7 @@ export function useSales() {
 
   async function handleStatusUpdate(saleStatus) {
     if (!currentSale) {
-      setError('Once satis olusturmalisiniz.')
+      setError('Önce satış oluşturmalısınız.')
       return
     }
 
@@ -216,7 +216,12 @@ export function useSales() {
     try {
       const sale = await updateSaleStatus(currentSale.saleId, { saleStatus })
       setCurrentSale(sale)
-      setSuccess(`Satis durumu ${saleStatus} olarak guncellendi.`)
+      const statusLabels = {
+        Pending: 'Beklemede',
+        Completed: 'Tamamlandı',
+        Cancelled: 'İptal Edildi',
+      }
+      setSuccess(`Satış durumu ${statusLabels[saleStatus] || saleStatus} olarak güncellendi.`)
     } catch (err) {
       setError(err.message)
       setValidationErrors(err.validationErrors)

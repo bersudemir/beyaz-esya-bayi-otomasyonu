@@ -3,23 +3,23 @@ import { Link } from 'react-router-dom'
 const quickLinks = [
   {
     path: '/customers',
-    title: 'Musteriler',
-    description: 'Musteri kayitlarini listele, yeni kayit ekle ve guncelle.',
+    title: 'Müşteriler',
+    description: 'Müşteri kayıtlarını listele, yeni kayıt ekle ve güncelle.',
   },
   {
     path: '/products',
-    title: 'Urunler',
-    description: 'Urunleri, kategori filtrelerini ve stok durumunu takip et.',
+    title: 'Ürünler',
+    description: 'Ürünleri, kategori filtrelerini ve stok durumunu takip et.',
   },
   {
     path: '/sales/create',
-    title: 'Satis Olustur',
-    description: 'Musteri ve calisan secerek yeni satis sureci baslat.',
+    title: 'Satış Oluştur',
+    description: 'Müşteri ve çalışan seçerek yeni satış süreci başlat.',
   },
   {
     path: '/sales/reports',
-    title: 'Satis Raporlari',
-    description: 'Genel satis raporunu ve musteri bazli gecmisi incele.',
+    title: 'Satış Raporları',
+    description: 'Genel satış raporunu ve müşteri bazlı geçmişi incele.',
   },
 ]
 
@@ -27,12 +27,7 @@ function HomePage() {
   return (
     <section className="page-section">
       <div className="page-heading">
-        <h1>Beyaz Esya Bayi / Satis Otomasyonu</h1>
-        <p>
-          Spring Boot backend ile calisan, musteri, urun, stok ve satis
-          islemlerini sade bir React arayuzu uzerinden yonetecek ogrenci
-          projesi.
-        </p>
+        <h1>Beyaz Eşya Bayi / Satış Otomasyonu</h1>
       </div>
 
       <div className="quick-link-grid">

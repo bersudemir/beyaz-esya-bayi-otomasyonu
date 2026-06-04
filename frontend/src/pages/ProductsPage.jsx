@@ -25,10 +25,10 @@ function ProductsPage() {
   return (
     <section className="page-section">
       <div className="page-heading">
-        <h1>Urunler</h1>
+        <h1>Ürünler</h1>
         <p>
-          Urunleri listeleyebilir, kategoriye gore filtreleyebilir, stok
-          gorunumunu inceleyebilir ve manuel stok guncellemesi yapabilirsiniz.
+          Ürünleri listeleyebilir, kategoriye göre filtreleyebilir, stok
+          görünümünü inceleyebilir ve manuel stok güncellemesi yapabilirsiniz.
         </p>
       </div>
 
@@ -37,16 +37,16 @@ function ProductsPage() {
 
       <div className="content-grid">
         <form className="form-panel" onSubmit={handleStockSubmit}>
-          <h2>Stok Guncelle</h2>
+          <h2>Stok Güncelle</h2>
 
           <label>
-            Urun
+            Ürün
             <select
               name="productId"
               value={stockForm.productId}
               onChange={handleStockInputChange}
             >
-              <option value="">Urun seciniz</option>
+              <option value="">Ürün seçiniz</option>
               {products.map((product) => (
                 <option key={product.productId} value={product.productId}>
                   {product.productName} - {product.brand}
@@ -73,18 +73,18 @@ function ProductsPage() {
               disabled={saving || !stockForm.productId}
               type="submit"
             >
-              {saving ? 'Guncelleniyor...' : 'Stok Guncelle'}
+              {saving ? 'Güncelleniyor...' : 'Stok Güncelle'}
             </button>
           </div>
         </form>
 
         <div className="table-panel">
           <div className="panel-header">
-            <h2>Urun Listesi</h2>
+            <h2>Ürün Listesi</h2>
             <label className="compact-filter">
               Kategori
               <select value={selectedCategoryId} onChange={handleCategoryChange}>
-                <option value="">Tum kategoriler</option>
+                <option value="">Tüm kategoriler</option>
                 {categories.map((category) => (
                   <option key={category.categoryId} value={category.categoryId}>
                     {category.categoryName}
@@ -94,10 +94,10 @@ function ProductsPage() {
             </label>
           </div>
 
-          {loading && <LoadingMessage message="Urunler yukleniyor..." />}
+          {loading && <LoadingMessage message="Ürünler yükleniyor..." />}
 
           {!loading && products.length === 0 && (
-            <p className="muted-text">Urun bulunamadi.</p>
+            <p className="muted-text">Ürün bulunamadı.</p>
           )}
 
           {products.length > 0 && (
@@ -106,12 +106,12 @@ function ProductsPage() {
                 <thead>
                   <tr>
                     <th>ID</th>
-                    <th>Urun</th>
+                    <th>Ürün</th>
                     <th>Marka</th>
                     <th>Kategori</th>
                     <th>Fiyat</th>
                     <th>Stok</th>
-                    <th>Islem</th>
+                    <th>İşlem</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -129,7 +129,7 @@ function ProductsPage() {
                           type="button"
                           onClick={() => selectProductForStock(product)}
                         >
-                          Stok Sec
+                          Stok Seç
                         </button>
                       </td>
                     </tr>
@@ -142,12 +142,12 @@ function ProductsPage() {
       </div>
 
       <div className="table-panel separated-panel">
-        <h2>Stok Gorunumu</h2>
+        <h2>Stok Görünümü</h2>
 
-        {stockLoading && <LoadingMessage message="Stok gorunumu yukleniyor..." />}
+        {stockLoading && <LoadingMessage message="Stok görünümü yükleniyor..." />}
 
         {!stockLoading && stockRows.length === 0 && (
-          <p className="muted-text">Stok gorunumu icin kayit bulunamadi.</p>
+          <p className="muted-text">Stok görünümü için kayıt bulunamadı.</p>
         )}
 
         {stockRows.length > 0 && (
@@ -156,7 +156,7 @@ function ProductsPage() {
               <thead>
                 <tr>
                   <th>ID</th>
-                  <th>Urun</th>
+                  <th>Ürün</th>
                   <th>Marka</th>
                   <th>Kategori</th>
                   <th>Fiyat</th>

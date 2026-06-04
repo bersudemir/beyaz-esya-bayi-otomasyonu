@@ -22,16 +22,16 @@ function EmployeesPage() {
   return (
     <section className="page-section">
       <div className="page-heading">
-        <h1>Calisanlar</h1>
+        <h1>Çalışanlar</h1>
         <p>
-          Satis surecinde gorev alan calisanlari listeleyebilir, yeni calisan
-          ekleyebilir ve mevcut kayitlari guncelleyebilirsiniz.
+          Satış sürecinde görev alan çalışanları listeleyebilir, yeni çalışan
+          ekleyebilir ve mevcut kayıtları güncelleyebilirsiniz.
         </p>
       </div>
 
       <div className="content-grid">
         <form className="form-panel" onSubmit={handleSubmit}>
-          <h2>{editingEmployeeId ? 'Calisan Guncelle' : 'Yeni Calisan'}</h2>
+          <h2>{editingEmployeeId ? 'Çalışan Güncelle' : 'Yeni Çalışan'}</h2>
 
           <label>
             Ad
@@ -39,7 +39,7 @@ function EmployeesPage() {
               name="firstName"
               value={form.firstName}
               onChange={handleInputChange}
-              placeholder="Ayse"
+              placeholder="Ayşe"
             />
           </label>
 
@@ -69,12 +69,12 @@ function EmployeesPage() {
               name="position"
               value={form.position}
               onChange={handleInputChange}
-              placeholder="Sales Representative"
+              placeholder="Satış Temsilcisi"
             />
           </label>
 
           <label>
-            Maas
+            Maaş
             <input
               name="salary"
               type="number"
@@ -91,24 +91,24 @@ function EmployeesPage() {
 
           <div className="button-row">
             <button className="primary-button" disabled={saving} type="submit">
-              {saving ? 'Kaydediliyor...' : editingEmployeeId ? 'Guncelle' : 'Ekle'}
+              {saving ? 'Kaydediliyor...' : editingEmployeeId ? 'Güncelle' : 'Ekle'}
             </button>
 
             {editingEmployeeId && (
               <button className="secondary-button" type="button" onClick={resetForm}>
-                Vazgec
+                Vazgeç
               </button>
             )}
           </div>
         </form>
 
         <div className="table-panel">
-          <h2>Calisan Listesi</h2>
+          <h2>Çalışan Listesi</h2>
 
-          {loading && <LoadingMessage message="Calisanlar yukleniyor..." />}
+          {loading && <LoadingMessage message="Çalışanlar yükleniyor..." />}
 
           {!loading && employees.length === 0 && (
-            <p className="muted-text">Kayitli calisan bulunamadi.</p>
+            <p className="muted-text">Kayıtlı çalışan bulunamadı.</p>
           )}
 
           {employees.length > 0 && (
@@ -120,8 +120,8 @@ function EmployeesPage() {
                     <th>Ad Soyad</th>
                     <th>Telefon</th>
                     <th>Pozisyon</th>
-                    <th>Maas</th>
-                    <th>Islem</th>
+                    <th>Maaş</th>
+                    <th>İşlem</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -140,7 +140,7 @@ function EmployeesPage() {
                           type="button"
                           onClick={() => startEdit(employee)}
                         >
-                          Duzenle
+                          Düzenle
                         </button>
                       </td>
                     </tr>

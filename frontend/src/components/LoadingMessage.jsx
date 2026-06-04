@@ -1,4 +1,4 @@
-function LoadingMessage({ message = 'Yukleniyor...' }) {
+function LoadingMessage({ message = 'Yükleniyor...' }) {
   return <div className="message-box info-message">{message}</div>
 }
 

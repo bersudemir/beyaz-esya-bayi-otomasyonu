@@ -2,12 +2,12 @@ import { NavLink, Outlet } from 'react-router-dom'
 
 const menuItems = [
   { path: '/', label: 'Ana Sayfa' },
-  { path: '/customers', label: 'Musteriler' },
-  { path: '/employees', label: 'Calisanlar' },
+  { path: '/customers', label: 'Müşteriler' },
+  { path: '/employees', label: 'Çalışanlar' },
   { path: '/categories', label: 'Kategoriler' },
-  { path: '/products', label: 'Urunler' },
-  { path: '/sales/create', label: 'Satis Olustur' },
-  { path: '/sales/reports', label: 'Satis Raporlari' },
+  { path: '/products', label: 'Ürünler' },
+  { path: '/sales/create', label: 'Satış Oluştur' },
+  { path: '/sales/reports', label: 'Satış Raporları' },
 ]
 
 function AppLayout() {
@@ -17,12 +17,12 @@ function AppLayout() {
         <div className="brand">
           <span className="brand-mark">BE</span>
           <div>
-            <strong>Beyaz Esya Bayi</strong>
-            <span>Satis Otomasyonu</span>
+            <strong>Beyaz Eşya Bayi</strong>
+            <span>Satış Otomasyonu</span>
           </div>
         </div>
 
-        <nav className="main-nav" aria-label="Ana menu">
+        <nav className="main-nav" aria-label="Ana menü">
           {menuItems.map((item) => (
             <NavLink
               key={item.path}

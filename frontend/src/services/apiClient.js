@@ -22,7 +22,7 @@ async function request(path, options = {}) {
   const data = await parseResponse(response)
 
   if (!response.ok) {
-    const error = new Error(data?.message || 'Islem sirasinda bir hata olustu.')
+    const error = new Error(data?.message || 'İşlem sırasında bir hata oluştu.')
     error.status = response.status
     error.validationErrors = data?.validationErrors || null
     error.details = data

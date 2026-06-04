@@ -22,16 +22,16 @@ function CustomersPage() {
   return (
     <section className="page-section">
       <div className="page-heading">
-        <h1>Musteriler</h1>
+        <h1>Müşteriler</h1>
         <p>
-          Musteri kayitlarini listeleyebilir, yeni musteri ekleyebilir ve var
-          olan musterileri guncelleyebilirsiniz.
+          Müşteri kayıtlarını listeleyebilir, yeni müşteri ekleyebilir ve var
+          olan müşterileri güncelleyebilirsiniz.
         </p>
       </div>
 
       <div className="content-grid">
         <form className="form-panel" onSubmit={handleSubmit}>
-          <h2>{editingCustomerId ? 'Musteri Guncelle' : 'Yeni Musteri'}</h2>
+          <h2>{editingCustomerId ? 'Müşteri Güncelle' : 'Yeni Müşteri'}</h2>
 
           <label>
             Ad
@@ -49,7 +49,7 @@ function CustomersPage() {
               name="lastName"
               value={form.lastName}
               onChange={handleInputChange}
-              placeholder="Yilmaz"
+              placeholder="Yılmaz"
             />
           </label>
 
@@ -64,7 +64,7 @@ function CustomersPage() {
           </label>
 
           <label>
-            Email
+            E-posta
             <input
               name="email"
               type="email"
@@ -79,24 +79,24 @@ function CustomersPage() {
 
           <div className="button-row">
             <button className="primary-button" disabled={saving} type="submit">
-              {saving ? 'Kaydediliyor...' : editingCustomerId ? 'Guncelle' : 'Ekle'}
+              {saving ? 'Kaydediliyor...' : editingCustomerId ? 'Güncelle' : 'Ekle'}
             </button>
 
             {editingCustomerId && (
               <button className="secondary-button" type="button" onClick={resetForm}>
-                Vazgec
+                Vazgeç
               </button>
             )}
           </div>
         </form>
 
         <div className="table-panel">
-          <h2>Musteri Listesi</h2>
+          <h2>Müşteri Listesi</h2>
 
-          {loading && <LoadingMessage message="Musteriler yukleniyor..." />}
+          {loading && <LoadingMessage message="Müşteriler yükleniyor..." />}
 
           {!loading && customers.length === 0 && (
-            <p className="muted-text">Kayitli musteri bulunamadi.</p>
+            <p className="muted-text">Kayıtlı müşteri bulunamadı.</p>
           )}
 
           {customers.length > 0 && (
@@ -107,8 +107,8 @@ function CustomersPage() {
                     <th>ID</th>
                     <th>Ad Soyad</th>
                     <th>Telefon</th>
-                    <th>Email</th>
-                    <th>Islem</th>
+                    <th>E-posta</th>
+                    <th>İşlem</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -126,7 +126,7 @@ function CustomersPage() {
                           type="button"
                           onClick={() => startEdit(customer)}
                         >
-                          Duzenle
+                          Düzenle
                         </button>
                       </td>
                     </tr>

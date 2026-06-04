@@ -85,10 +85,10 @@ export function useCustomers() {
     try {
       if (editingCustomerId) {
         await updateCustomer(editingCustomerId, form)
-        setSuccess('Musteri basariyla guncellendi.')
+        setSuccess('Müşteri başarıyla güncellendi.')
       } else {
         await createCustomer(form)
-        setSuccess('Musteri basariyla eklendi.')
+        setSuccess('Müşteri başarıyla eklendi.')
       }
 
       resetForm()

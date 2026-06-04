@@ -53,7 +53,7 @@ export function useCategories() {
     try {
       await createCategory(form)
       setForm(emptyForm)
-      setSuccess('Kategori basariyla eklendi.')
+      setSuccess('Kategori başarıyla eklendi.')
       await loadCategories()
     } catch (err) {
       setError(err.message)

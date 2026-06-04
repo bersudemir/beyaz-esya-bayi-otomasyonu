@@ -21,7 +21,7 @@ function CategoriesPage() {
       <div className="page-heading">
         <h1>Kategoriler</h1>
         <p>
-          Urunleri gruplamak icin kategori kayitlarini listeleyebilir ve yeni
+          Ürünleri gruplamak için kategori kayıtlarını listeleyebilir ve yeni
           kategori ekleyebilirsiniz.
         </p>
       </div>
@@ -31,7 +31,7 @@ function CategoriesPage() {
           <h2>Yeni Kategori</h2>
 
           <label>
-            Kategori Adi
+            Kategori Adı
             <input
               name="categoryName"
               value={form.categoryName}
@@ -53,10 +53,10 @@ function CategoriesPage() {
         <div className="table-panel">
           <h2>Kategori Listesi</h2>
 
-          {loading && <LoadingMessage message="Kategoriler yukleniyor..." />}
+          {loading && <LoadingMessage message="Kategoriler yükleniyor..." />}
 
           {!loading && categories.length === 0 && (
-            <p className="muted-text">Kayitli kategori bulunamadi.</p>
+            <p className="muted-text">Kayıtlı kategori bulunamadı.</p>
           )}
 
           {categories.length > 0 && (
@@ -65,7 +65,7 @@ function CategoriesPage() {
                 <thead>
                   <tr>
                     <th>ID</th>
-                    <th>Kategori Adi</th>
+                    <th>Kategori Adı</th>
                   </tr>
                 </thead>
                 <tbody>

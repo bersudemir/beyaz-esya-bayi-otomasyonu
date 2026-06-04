@@ -2,6 +2,16 @@ import ErrorMessage from '../components/ErrorMessage'
 import LoadingMessage from '../components/LoadingMessage'
 import { useSalesReport } from '../viewmodels/useSalesReport'
 
+const saleStatusLabels = {
+  Pending: 'Beklemede',
+  Completed: 'Tamamlandı',
+  Cancelled: 'İptal Edildi',
+}
+
+function formatSaleStatus(status) {
+  return saleStatusLabels[status] || status
+}
+
 function SalesReportTable({ rows, emptyMessage }) {
   if (rows.length === 0) {
     return <p className="muted-text">{emptyMessage}</p>
@@ -12,17 +22,17 @@ function SalesReportTable({ rows, emptyMessage }) {
       <table>
         <thead>
           <tr>
-            <th>Satis ID</th>
+            <th>Satış ID</th>
             <th>Tarih</th>
             <th>Durum</th>
             <th>Toplam</th>
-            <th>Musteri</th>
-            <th>Calisan</th>
-            <th>Urun</th>
+            <th>Müşteri</th>
+            <th>Çalışan</th>
+            <th>Ürün</th>
             <th>Marka</th>
             <th>Miktar</th>
             <th>Birim Fiyat</th>
-            <th>Satir Toplam</th>
+            <th>Satır Toplam</th>
           </tr>
         </thead>
         <tbody>
@@ -30,7 +40,7 @@ function SalesReportTable({ rows, emptyMessage }) {
             <tr key={`${row.saleId}-${row.productId}-${index}`}>
               <td>{row.saleId}</td>
               <td>{row.saleDate}</td>
-              <td>{row.saleStatus}</td>
+              <td>{formatSaleStatus(row.saleStatus)}</td>
               <td>{row.totalAmount}</td>
               <td>{row.customerName}</td>
               <td>{row.employeeName}</td>
@@ -63,10 +73,10 @@ function SalesReportPage() {
   return (
     <section className="page-section">
       <div className="page-heading">
-        <h1>Satis Raporlari</h1>
+        <h1>Satış Raporları</h1>
         <p>
-          Genel satis raporunu listeleyebilir ve musteri ID girerek musteri
-          bazli satis gecmisini sorgulayabilirsiniz.
+          Genel satış raporunu listeleyebilir ve müşteri ID girerek müşteri
+          bazlı satış geçmişini sorgulayabilirsiniz.
         </p>
       </div>
 
@@ -74,7 +84,7 @@ function SalesReportPage() {
 
       <form className="report-filter" onSubmit={handleCustomerSearch}>
         <label>
-          Musteri ID
+          Müşteri ID
           <input
             type="number"
             min="1"
@@ -88,28 +98,28 @@ function SalesReportPage() {
           disabled={customerLoading || !customerId}
           type="submit"
         >
-          {customerLoading ? 'Sorgulaniyor...' : 'Musteri Satislarini Getir'}
+          {customerLoading ? 'Sorgulanıyor...' : 'Müşteri Satışlarını Getir'}
         </button>
       </form>
 
       <div className="table-panel separated-panel">
-        <h2>Musteri Satislari</h2>
-        {customerLoading && <LoadingMessage message="Musteri satislari yukleniyor..." />}
+        <h2>Müşteri Satışları</h2>
+        {customerLoading && <LoadingMessage message="Müşteri satışları yükleniyor..." />}
         {!customerLoading && (
           <SalesReportTable
             rows={customerRows}
-            emptyMessage="Musteri sorgusu yapilmadi veya kayit bulunamadi."
+            emptyMessage="Müşteri sorgusu yapılmadı veya kayıt bulunamadı."
           />
         )}
       </div>
 
       <div className="table-panel separated-panel">
-        <h2>Genel Satis Raporu</h2>
-        {loading && <LoadingMessage message="Satis raporu yukleniyor..." />}
+        <h2>Genel Satış Raporu</h2>
+        {loading && <LoadingMessage message="Satış raporu yükleniyor..." />}
         {!loading && (
           <SalesReportTable
             rows={reportRows}
-            emptyMessage="Satis raporu icin kayit bulunamadi."
+            emptyMessage="Satış raporu için kayıt bulunamadı."
           />
         )}
       </div>

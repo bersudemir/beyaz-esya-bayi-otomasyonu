@@ -3,6 +3,16 @@ import LoadingMessage from '../components/LoadingMessage'
 import SuccessMessage from '../components/SuccessMessage'
 import { useSales } from '../viewmodels/useSales'
 
+const saleStatusLabels = {
+  Pending: 'Beklemede',
+  Completed: 'Tamamlandı',
+  Cancelled: 'İptal Edildi',
+}
+
+function formatSaleStatus(status) {
+  return saleStatusLabels[status] || status
+}
+
 function CreateSalePage() {
   const {
     customers,
@@ -31,30 +41,30 @@ function CreateSalePage() {
   return (
     <section className="page-section">
       <div className="page-heading">
-        <h1>Satis Olustur</h1>
+        <h1>Satış Oluştur</h1>
         <p>
-          Once musteri ve calisan secerek satis kaydi olusturun. Ardindan urun
-          ekleyebilir, miktar guncelleyebilir ve satisi tamamlayabilir ya da
+          Önce müşteri ve çalışan seçerek satış kaydı oluşturun. Ardından ürün
+          ekleyebilir, miktar güncelleyebilir ve satışı tamamlayabilir ya da
           iptal edebilirsiniz.
         </p>
       </div>
 
-      {loading && <LoadingMessage message="Secenekler yukleniyor..." />}
+      {loading && <LoadingMessage message="Seçenekler yükleniyor..." />}
       <ErrorMessage message={error} validationErrors={validationErrors} />
       <SuccessMessage message={success} />
 
       {currentSale && (
         <div className="sale-summary">
           <div>
-            <span>Satis ID</span>
+            <span>Satış ID</span>
             <strong>{currentSale.saleId}</strong>
           </div>
           <div>
-            <span>Musteri</span>
+            <span>Müşteri</span>
             <strong>{currentSale.customerName}</strong>
           </div>
           <div>
-            <span>Calisan</span>
+            <span>Çalışan</span>
             <strong>{currentSale.employeeName}</strong>
           </div>
           <div>
@@ -63,7 +73,7 @@ function CreateSalePage() {
           </div>
           <div>
             <span>Durum</span>
-            <strong>{currentSale.saleStatus}</strong>
+            <strong>{formatSaleStatus(currentSale.saleStatus)}</strong>
           </div>
         </div>
       )}
@@ -71,17 +81,17 @@ function CreateSalePage() {
       <div className="content-grid">
         <div className="form-panel">
           <form onSubmit={handleCreateSale}>
-            <h2>Satis Bilgileri</h2>
+            <h2>Satış Bilgileri</h2>
 
             <label>
-              Musteri
+              Müşteri
               <select
                 name="customerId"
                 value={saleForm.customerId}
                 onChange={handleSaleFormChange}
                 disabled={Boolean(currentSale)}
               >
-                <option value="">Musteri seciniz</option>
+                <option value="">Müşteri seçiniz</option>
                 {customers.map((customer) => (
                   <option key={customer.customerId} value={customer.customerId}>
                     {customer.firstName} {customer.lastName}
@@ -91,14 +101,14 @@ function CreateSalePage() {
             </label>
 
             <label>
-              Calisan
+              Çalışan
               <select
                 name="employeeId"
                 value={saleForm.employeeId}
                 onChange={handleSaleFormChange}
                 disabled={Boolean(currentSale)}
               >
-                <option value="">Calisan seciniz</option>
+                <option value="">Çalışan seçiniz</option>
                 {employees.map((employee) => (
                   <option key={employee.employeeId} value={employee.employeeId}>
                     {employee.firstName} {employee.lastName}
@@ -113,23 +123,23 @@ function CreateSalePage() {
                 disabled={processing || Boolean(currentSale)}
                 type="submit"
               >
-                {processing ? 'Isleniyor...' : 'Satis Olustur'}
+                {processing ? 'İşleniyor...' : 'Satış Oluştur'}
               </button>
             </div>
           </form>
 
           <form className="sub-form" onSubmit={handleAddDetail}>
-            <h2>Urun Ekle</h2>
+            <h2>Ürün Ekle</h2>
 
             <label>
-              Urun
+              Ürün
               <select
                 name="productId"
                 value={detailForm.productId}
                 onChange={handleDetailFormChange}
                 disabled={!currentSale}
               >
-                <option value="">Urun seciniz</option>
+                <option value="">Ürün seçiniz</option>
                 {products.map((product) => (
                   <option key={product.productId} value={product.productId}>
                     {product.productName} - {product.brand}
@@ -156,17 +166,17 @@ function CreateSalePage() {
                 disabled={processing || !currentSale || !detailForm.productId}
                 type="submit"
               >
-                Urun Ekle
+                Ürün Ekle
               </button>
             </div>
           </form>
         </div>
 
         <div className="table-panel">
-          <h2>Satis Urunleri</h2>
+          <h2>Satış Ürünleri</h2>
 
           {saleItems.length === 0 && (
-            <p className="muted-text">Bu satis icin henuz urun eklenmedi.</p>
+            <p className="muted-text">Bu satış için henüz ürün eklenmedi.</p>
           )}
 
           {saleItems.length > 0 && (
@@ -174,11 +184,11 @@ function CreateSalePage() {
               <table>
                 <thead>
                   <tr>
-                    <th>Urun ID</th>
-                    <th>Urun</th>
+                    <th>Ürün ID</th>
+                    <th>Ürün</th>
                     <th>Marka</th>
                     <th>Miktar</th>
-                    <th>Islem</th>
+                    <th>İşlem</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -194,7 +204,7 @@ function CreateSalePage() {
                           type="button"
                           onClick={() => selectItemForUpdate(item)}
                         >
-                          Miktar Sec
+                          Miktar Seç
                         </button>
                       </td>
                     </tr>
@@ -206,14 +216,14 @@ function CreateSalePage() {
 
           <form className="inline-form" onSubmit={handleUpdateQuantity}>
             <label>
-              Guncellenecek Urun
+              Güncellenecek Ürün
               <select
                 name="productId"
                 value={quantityForm.productId}
                 onChange={handleQuantityFormChange}
                 disabled={!currentSale}
               >
-                <option value="">Urun seciniz</option>
+                <option value="">Ürün seçiniz</option>
                 {saleItems.map((item) => (
                   <option key={item.productId} value={item.productId}>
                     {item.productName}
@@ -239,7 +249,7 @@ function CreateSalePage() {
               disabled={processing || !currentSale || !quantityForm.productId}
               type="submit"
             >
-              Miktar Guncelle
+              Miktar Güncelle
             </button>
           </form>
 
@@ -250,7 +260,7 @@ function CreateSalePage() {
               type="button"
               onClick={() => handleStatusUpdate('Completed')}
             >
-              Satisi Tamamla
+              Satışı Tamamla
             </button>
             <button
               className="secondary-button"
@@ -258,7 +268,7 @@ function CreateSalePage() {
               type="button"
               onClick={() => handleStatusUpdate('Cancelled')}
             >
-              Satisi Iptal Et
+              Satışı İptal Et
             </button>
           </div>
         </div>
