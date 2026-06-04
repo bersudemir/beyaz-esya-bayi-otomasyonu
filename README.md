@@ -98,15 +98,12 @@ Page / View -> ViewModel Hook -> Service / API -> Backend
 
 ## Arayüz Görselleri
 
-- Geliştirilen arayüzden örnek ekran görüntüleri bu alana eklenebilir.
-
-```markdown
-![Ana Sayfa](docs/home.png)
-![Müşteriler Sayfası](docs/customers.png)
-![Ürünler Sayfası](docs/products.png)
-![Satış Oluşturma Sayfası](docs/create-sale.png)
-![Satış Raporları Sayfası](docs/sales-report.png)
-```
+<img width="1797" height="903" alt="Ekran görüntüsü 2026-06-04 141653" src="https://github.com/user-attachments/assets/79392cd6-ca8d-460f-ac5e-a579098fc2d9" />
+<img width="1646" height="909" alt="Ekran görüntüsü 2026-06-04 141734" src="https://github.com/user-attachments/assets/0b7ddd99-3be7-43d9-a55a-8166d264e09f" />
+<img width="1785" height="932" alt="Ekran görüntüsü 2026-06-04 141746" src="https://github.com/user-attachments/assets/7e0dc6f0-c997-44a8-9102-cb39e6747b6b" />
+<img width="1779" height="920" alt="Ekran görüntüsü 2026-06-04 141728" src="https://github.com/user-attachments/assets/49068b8c-199a-42ff-8ce6-c2690e802458" />
+<img width="1749" height="912" alt="Ekran görüntüsü 2026-06-04 141720" src="https://github.com/user-attachments/assets/5d906d86-4249-4297-8291-f027537ba490" />
+<img width="1785" height="926" alt="Ekran görüntüsü 2026-06-04 141713" src="https://github.com/user-attachments/assets/b9c4f767-144b-4d26-a70d-72f7b8b0104d" />
 
 ## Projeyi Çalıştırma
 
